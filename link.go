@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	Unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
-	Delimiters = ":/?#[]@!$&'()*+,;="
-	AllAllowed = Unreserved + Delimiters
-	HexDigits  = "0123456789ABCDEFabcdef"
+	unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+	delimiters = ":/?#[]@!$&'()*+,;="
+	allAllowed = unreserved + delimiters
+	hexDigits  = "0123456789ABCDEFabcdef"
 )
 
-var CrossOriginValues = []string{"anonymous", "use-credentials"}
+var crossOriginValues = []string{"anonymous", "use-credentials"}
 
 func Append(header http.Header, target string, rel string, opts ...Option) {
 	args := &Options{}
@@ -66,7 +66,7 @@ func Append(header http.Header, target string, rel string, opts ...Option) {
 
 	if args.CrossOrigin != "" {
 		crossOrigin := strings.ToLower(args.CrossOrigin)
-		if !checkInSlice(crossOrigin, CrossOriginValues) {
+		if !checkInSlice(crossOrigin, crossOriginValues) {
 			panic("crossorigin must be set to either 'anonymous' or 'use-credentials'")
 		}
 		if crossOrigin == "anonymous" {
@@ -114,9 +114,9 @@ func createCharLookup(allowedChars string) map[int]string {
 func createStrEncoder(isValue bool, checkIsEscaped bool) func(uri string) string {
 	var allowedChars string
 	if isValue {
-		allowedChars = Unreserved
+		allowedChars = unreserved
 	} else {
-		allowedChars = AllAllowed
+		allowedChars = allAllowed
 	}
 	allowedCharsPlusPercent := allowedChars + "%"
 	lookup := createCharLookup(allowedChars)
@@ -138,7 +138,7 @@ func createStrEncoder(isValue bool, checkIsEscaped bool) func(uri string) string
 					break
 				}
 
-				if !strings.Contains(string(hexOctet[0]), HexDigits) &&
+				if !strings.Contains(string(hexOctet[0]), hexDigits) &&
 					strings.Contains(string(hexOctet[1]), hexOctet) {
 					broke = true
 					break
